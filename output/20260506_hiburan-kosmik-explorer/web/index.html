@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hiburan Kosmik Explorer Web UI</title>
+  <style>body{font-family:Inter,system-ui,sans-serif;background:#f9fafb;color:#111827;margin:0;padding:24px;}  .container{max-width:980px;margin:0 auto;}  h1{margin-bottom:8px;}  .card{background:#ffffff;border-radius:20px;box-shadow:0 18px 48px rgba(15,23,42,.08);padding:24px;margin-top:20px;}  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;}  pre{background:#111827;color:#f8fafc;padding:16px;border-radius:16px;overflow:auto;white-space:pre-wrap;word-break:break-word;}  button{border:none;padding:12px 18px;border-radius:12px;background:#2563eb;color:#fff;cursor:pointer;transition:all .15s ease;}  button:hover{background:#1d4ed8;}  iframe{width:100%;height:420px;border:1px solid #d1d5db;border-radius:16px;}  .run-output{background:#f3f4f6;padding:16px;border-radius:16px;white-space:pre-wrap;min-height:120px;}  @media(max-width:720px){.grid{grid-template-columns:1fr;}}</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hiburan Kosmik Explorer - Web UI</h1>
+    <p>Aplikasi hiburan kosmik explorer yang menyatukan tema Hiburan, dengan nuansa Kosmik dan fungsi Kolektif. Dibangun sebagai prototype sederhana menggunakan TypeScript untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.</p>
+    <div class="card">
+      <h2>Detail Proyek</h2>
+      <div class="grid">
+        <div>
+          <p><strong>Folder:</strong> 20260506_hiburan-kosmik-explorer</p>
+          <p><strong>Bahasa:</strong> TypeScript</p>
+          <p><strong>File awal:</strong> index.ts</p>
+          <p><strong>Run command:</strong> <code>npx ts-node ../src/index.ts</code></p>
+        </div>
+        <div>
+          <p><strong>Tema:</strong></p>
+          <ul><li>Hiburan</li><li>Kosmik</li><li>Kolektif</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Run UI</h2>
+      <p>Gunakan halaman ini untuk melihat detail dan prosedur menjalankan aplikasi.</p>
+      <p><a href="prototype.html" target="_blank">🔗 Buka Prototype UI Lengkap</a></p>
+      <div id="appPreview"></div>
+      <div id="runArea"></div>
+    </div>
+    <div class="card">
+      <h2>Code Preview</h2>
+      <pre># Hiburan Kosmik Explorer
+# Prototype aplikasi dengan tema: Hiburan, Kosmik, Kolektif
+# Tambahkan kode dasar di sini</pre>
+    </div>
+  </div>
+  <script>
+const metadata = {"name": "20260506_hiburan-kosmik-explorer", "title": "Hiburan Kosmik Explorer", "description": "Aplikasi hiburan kosmik explorer yang menyatukan tema Hiburan, dengan nuansa Kosmik dan fungsi Kolektif. Dibangun sebagai prototype sederhana menggunakan TypeScript untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.", "created_at": "2026-05-06T01:55:51.711190Z", "themes": ["Hiburan", "Kosmik", "Kolektif"], "language": {"key": "typescript", "name": "TypeScript", "preferred_themes": ["Produktivitas", "Edukasi", "Keuangan", "Komunikasi", "Data", "Keamanan"], "file": "index.ts"}, "files": ["src\\index.ts"], "keywords": ["hiburan", "kosmik", "kolektif"]};
+const codePreview = "# Hiburan Kosmik Explorer\n# Prototype aplikasi dengan tema: Hiburan, Kosmik, Kolektif\n# Tambahkan kode dasar di sini";
+const runArea = document.getElementById('runArea');
+function showHtmlPreview() {
+  runArea.innerHTML = '<h3>Preview HTML</h3><iframe src="../src/index.html"></iframe>';
+}
+function showJsSimulation() {
+  runArea.innerHTML = '<button id="runButton">Simulasikan Run</button><div class="run-output" id="outputArea">Tekan tombol untuk melihat output.</div>';
+  document.getElementById('runButton').addEventListener('click', function() {
+    document.getElementById('outputArea').textContent = 'Running ' + metadata.title + '\nTema: ' + metadata.themes.join(', ');
+  });
+}
+function showCommandNote(command) {
+  runArea.innerHTML = '<p>Jalankan perintah di atas untuk mengeksekusi proyek di terminal atau environment yang sesuai.</p>';
+}
+if (metadata.language.key === 'html') { showHtmlPreview(); } else if (metadata.language.key === 'javascript') { showJsSimulation(); } else { showCommandNote(); }
+</script>
+</body>
+</html>

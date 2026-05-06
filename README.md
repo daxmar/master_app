@@ -31,7 +31,7 @@ Sebuah sistem generator aplikasi harian yang menghasilkan ide unik secara otomat
 - `run_generator.py` : entrypoint generator
 - `ai_agent.py` : modul bantu AI Agent
 - `data/` : tema, bahasa, pola ide
-- `output/` : hasil proyek harian
+- `output/` : hasil proyek
 - `web/` : UI web statis untuk preview generator
 
 ## UI Web Statis
