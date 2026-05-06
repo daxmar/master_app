@@ -1,0 +1,33 @@
+{
+  "name": "20260506_kesehatan-dan-steampunk-playground",
+  "title": "Kesehatan dan Steampunk Playground",
+  "description": "Aplikasi kesehatan dan steampunk playground yang menyatukan tema Kesehatan, dengan nuansa Steampunk dan fungsi AI. Dibangun sebagai prototype sederhana menggunakan TypeScript untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.",
+  "created_at": "2026-05-06T01:46:55.092835Z",
+  "themes": [
+    "Kesehatan",
+    "Steampunk",
+    "AI"
+  ],
+  "language": {
+    "key": "typescript",
+    "name": "TypeScript",
+    "preferred_themes": [
+      "Produktivitas",
+      "Edukasi",
+      "Keuangan",
+      "Komunikasi",
+      "Data",
+      "Keamanan"
+    ],
+    "file": "index.ts"
+  },
+  "files": [
+    "src\\index.ts",
+    "web\\index.html"
+  ],
+  "keywords": [
+    "kesehatan",
+    "steampunk",
+    "ai"
+  ]
+}

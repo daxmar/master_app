@@ -1,0 +1,33 @@
+{
+  "name": "20260506_game-dan-futuristik-playground",
+  "title": "Game dan Futuristik Playground",
+  "description": "Aplikasi game dan futuristik playground yang menyatukan tema Game, dengan nuansa Futuristik dan fungsi Sudut pandang. Dibangun sebagai prototype sederhana menggunakan Go untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.",
+  "created_at": "2026-05-06T01:43:12.210542Z",
+  "themes": [
+    "Game",
+    "Futuristik",
+    "Sudut pandang"
+  ],
+  "language": {
+    "key": "go",
+    "name": "Go",
+    "preferred_themes": [
+      "IoT",
+      "Keamanan",
+      "Data",
+      "Produktivitas",
+      "Server",
+      "Koneksi"
+    ],
+    "file": "main.go"
+  },
+  "files": [
+    "src\\main.go",
+    "web\\index.html"
+  ],
+  "keywords": [
+    "game",
+    "futuristik",
+    "sudut pandang"
+  ]
+}

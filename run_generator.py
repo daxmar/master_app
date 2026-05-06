@@ -127,105 +127,24 @@ def write_file(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
-def create_placeholder_file(project_dir: Path, language_key: str, metadata: dict) -> None:
+def create_placeholder_file(project_dir: Path, language_key: str, metadata: dict, code_level: str = "basic") -> None:
     src_dir = project_dir / "src"
     src_dir.mkdir(parents=True, exist_ok=True)
     filename = SUPPORTED_LANGUAGE_FILES.get(language_key, "README.md")
     path = src_dir / filename
-    if language_key == "python":
-        content = (
-            "# Prototype aplikasi\n"
-            "def main():\n"
-            f"    print('Running {metadata['title']}')\n"
-            "    print('Tema: ' + ', '.join(metadata['themes']))\n\n"
-            "if __name__ == '__main__':\n"
-            "    main()\n"
-        )
-    elif language_key == "javascript":
-        content = (
-            "// Prototype aplikasi\n"
-            f"console.log('Running {metadata['title']}');\n"
-            "console.log('Tema: ' + ['" + "', '".join(metadata['themes']) + "']);\n"
-        )
-    elif language_key == "typescript":
-        content = (
-            "// Prototype aplikasi\n"
-            f"console.log('Running {metadata['title']}');\n"
-            "console.log('Tema: ' + [\n"
-            + ", ".join(f'\"{theme}\"' for theme in metadata['themes'])
-            + "]);\n"
-        )
-    elif language_key == "go":
-        content = (
-            "package main\n\n"
-            "import \"fmt\"\n\n"
-            "func main() {\n"
-            f"    fmt.Println(\"Running {metadata['title']}\")\n"
-            "}\n"
-        )
-    elif language_key == "rust":
-        content = (
-            "fn main() {\n"
-            f"    println!(\"Running {metadata['title']}\");\n"
-            "}\n"
-        )
-    elif language_key == "html":
-        content = (
-            "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
-            f"  <title>{metadata['title']}</title>\n"
-            "  <meta charset=\"UTF-8\">\n"
-            "</head>\n<body>\n"
-            f"  <h1>{metadata['title']}</h1>\n"
-            f"  <p>{metadata['description']}</p>\n"
-            "</body>\n</html>\n"
-        )
+
+    if code_level == "full":
+        content = AIWriter.generate_full_features(metadata)
     else:
-        content = (
-            f"# {metadata['title']}\n\n"
-            "Placeholder kode untuk bahasa yang dipilih.\n"
-        )
+        content = AIWriter.generate_basic_code(metadata)
+
     write_file(path, content)
     metadata["files"].append(str(path.relative_to(project_dir)))
 
 
 def build_web_code_preview(language_key: str, metadata: dict) -> str:
-    if language_key == "python":
-        return (
-            "# Prototype aplikasi\n"
-            f"print('Running {metadata['title']}')\n"
-            f"print('Tema: {', '.join(metadata['themes'])}')\n"
-        )
-    if language_key == "javascript" or language_key == "typescript":
-        return (
-            "// Prototype aplikasi\n"
-            f"console.log('Running {metadata['title']}');\n"
-            f"console.log('Tema: {', '.join(metadata['themes'])}');\n"
-        )
-    if language_key == "go":
-        return (
-            "package main\n\n"
-            "import \"fmt\"\n\n"
-            "func main() {\n"
-            f"    fmt.Println(\"Running {metadata['title']}\")\n"
-            "}\n"
-        )
-    if language_key == "rust":
-        return (
-            "fn main() {\n"
-            f"    println!(\"Running {metadata['title']}\");\n"
-            "}\n"
-        )
-    if language_key == "html":
-        return (
-            "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
-            f"  <title>{metadata['title']}</title>\n"
-            "  <meta charset=\"UTF-8\">\n"
-            "</head>\n<body>\n"
-            f"  <h1>{metadata['title']}</h1>\n"
-            f"  <p>{metadata['description']}</p>\n"
-            "</body>\n</html>\n"
-        )
-    return "# Placeholder kode untuk bahasa yang dipilih.\n"
+    # Gunakan AI Agent untuk generate preview kode
+    return AIWriter.generate_basic_code(metadata)
 
 
 def build_web_ui_html(metadata: dict) -> str:
@@ -278,6 +197,7 @@ def build_web_ui_html(metadata: dict) -> str:
         "    <div class=\"card\">\n"
         "      <h2>Run UI</h2>\n"
         f"      <p>Gunakan halaman ini untuk melihat detail dan prosedur menjalankan aplikasi.</p>\n"
+        f"      <p><a href=\"prototype.html\" target=\"_blank\">🔗 Buka Prototype UI Lengkap</a></p>\n"
         "      <div id=\"appPreview\"></div>\n"
         "      <div id=\"runArea\"></div>\n"
         "    </div>\n"
@@ -309,9 +229,55 @@ def build_web_ui_html(metadata: dict) -> str:
 
 
 def create_project_web_ui(project_dir: Path, metadata: dict) -> None:
-    html = build_web_ui_html(metadata)
-    write_file(project_dir / "web" / "index.html", html)
+    web_dir = project_dir / "web"
+    web_dir.mkdir(parents=True, exist_ok=True)
+    ui_html = build_web_ui_html(metadata)
+    write_file(web_dir / "index.html", ui_html)
+
+    # Create full UI prototype
+    prototype_html = AIWriter.generate_ui_prototype(metadata)
+    write_file(web_dir / "prototype.html", prototype_html)
+
     metadata["files"].append(str(Path("web") / "index.html"))
+    metadata["files"].append(str(Path("web") / "prototype.html"))
+
+
+def create_features_folders(project_dir: Path, metadata: dict) -> None:
+    features_dir = project_dir / "features"
+    features_dir.mkdir(parents=True, exist_ok=True)
+
+    # Determine features based on themes
+    features = []
+    if "Kesehatan" in metadata["themes"]:
+        features.append("health-tracking")
+    if "Produktivitas" in metadata["themes"]:
+        features.append("task-management")
+    if "IoT" in metadata["themes"]:
+        features.append("iot-connection")
+    if "AI" in metadata["themes"]:
+        features.append("ai-recommendation")
+    if "Musik" in metadata["themes"]:
+        features.append("music-player")
+    if "Game" in metadata["themes"]:
+        features.append("mini-game")
+    if not features:
+        features = ["basic-feature", "user-settings", "dashboard"]
+
+    for feature in features:
+        feature_dir = features_dir / feature
+        feature_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create feature code
+        feature_code = generate_feature_code(feature, metadata["language"]["key"], metadata)
+        write_file(feature_dir / f"{feature}.py", feature_code)  # Assuming Python for simplicity, adjust for other languages
+
+        # Create feature UI
+        feature_ui = generate_feature_ui(feature, metadata)
+        write_file(feature_dir / "index.html", feature_ui)
+
+        # Create feature README
+        feature_readme = f"# {feature.replace('-', ' ').title()}\n\nImplementasi fitur {feature} untuk aplikasi {metadata['title']}.\n\n## Cara menjalankan\n- Jalankan `{feature}.py` untuk backend\n- Buka `index.html` untuk UI web"
+        write_file(feature_dir / "README.md", feature_readme)
 
 
 def preview_candidate(metadata: dict) -> None:
@@ -351,12 +317,13 @@ def build_candidate(name: str | None = None) -> dict:
     return build_project_metadata(folder_name, combination, language, idea)
 
 
-def create_project_files(metadata: dict) -> Path:
+def create_project_files(metadata: dict, code_level: str = "basic") -> Path:
     project_dir = OUTPUT_DIR / metadata["name"]
     project_dir.mkdir(parents=True, exist_ok=True)
     write_file(project_dir / "README.md", build_readme_contents(metadata))
-    create_placeholder_file(project_dir, metadata["language"]["key"], metadata)
+    create_placeholder_file(project_dir, metadata["language"]["key"], metadata, code_level)
     create_project_web_ui(project_dir, metadata)
+    create_features_folders(project_dir, metadata)
     write_file(project_dir / "ai_notes.md", AIWriter.build_notes(metadata))
     build_manifest(project_dir, metadata)
     return project_dir
@@ -366,12 +333,15 @@ def run_generation(name: str | None = None, auto: bool = False) -> Path | None:
     while True:
         metadata = build_candidate(name)
         if auto:
-            return create_project_files(metadata)
+            return create_project_files(metadata, "full")
 
         preview_candidate(metadata)
         answer = input("Apakah ingin membuat aplikasi ini? (y/n): ").strip().lower()
         if answer in {"y", "yes"}:
-            return create_project_files(metadata)
+            level_choice = input("Pilih level kode (basic/full): ").strip().lower()
+            if level_choice not in {"basic", "full"}:
+                level_choice = "basic"
+            return create_project_files(metadata, level_choice)
         if answer in {"n", "no"}:
             again = input("Coba ide lain? (y/n): ").strip().lower()
             if again in {"y", "yes"}:
@@ -386,6 +356,150 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--name", type=str, help="Custom output folder name")
     parser.add_argument("--auto", action="store_true", help="Buat proyek langsung tanpa konfirmasi")
     return parser.parse_args()
+
+
+def generate_feature_code(feature: str, language_key: str, metadata: dict) -> str:
+    title = metadata["title"]
+    if language_key == "python":
+        if feature == "health-tracking":
+            return f"""# {title} - Health Tracking Feature
+import json
+import datetime
+
+class HealthTracker:
+    def __init__(self):
+        self.data_file = "health_data.json"
+
+    def log_activity(self, activity_type, value):
+        data = self.load_data()
+        today = datetime.date.today().isoformat()
+        if today not in data:
+            data[today] = {{}}
+        data[today][activity_type] = value
+        self.save_data(data)
+        print(f"Logged {{activity_type}}: {{value}}")
+
+    def load_data(self):
+        try:
+            with open(self.data_file, 'r') as f:
+                return json.load(f)
+        except:
+            return {{}}
+
+    def save_data(self, data):
+        with open(self.data_file, 'w') as f:
+            json.dump(data, f, indent=2)
+
+if __name__ == "__main__":
+    tracker = HealthTracker()
+    tracker.log_activity("steps", 8432)
+    print("Health tracking feature ready!")
+"""
+        elif feature == "task-management":
+            return f"""# {title} - Task Management Feature
+import json
+
+class TaskManager:
+    def __init__(self):
+        self.tasks_file = "tasks.json"
+
+    def add_task(self, task):
+        tasks = self.load_tasks()
+        tasks.append({{"task": task, "done": False}})
+        self.save_tasks(tasks)
+
+    def list_tasks(self):
+        tasks = self.load_tasks()
+        for i, task in enumerate(tasks, 1):
+            status = "✓" if task["done"] else "○"
+            print(f"{{i}}. {{status}} {{task['task']}}")
+
+    def load_tasks(self):
+        try:
+            with open(self.tasks_file, 'r') as f:
+                return json.load(f)
+        except:
+            return []
+
+    def save_tasks(self, tasks):
+        with open(self.tasks_file, 'w') as f:
+            json.dump(tasks, f, indent=2)
+
+if __name__ == "__main__":
+    manager = TaskManager()
+    manager.add_task("Review code")
+    manager.list_tasks()
+"""
+        # Add more features...
+        else:
+            return f"# {title} - {feature} Feature\n# Implementasi fitur {feature}\nprint('Feature {feature} executed!')"
+    else:
+        return f"# {title} - {feature} Feature\n# Placeholder for {language_key}"
+
+
+def generate_feature_ui(feature: str, metadata: dict) -> str:
+    title = metadata["title"]
+    feature_title = feature.replace('-', ' ').title()
+
+    if feature == "health-tracking":
+        return f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>{title} - {feature_title}</title>
+    <style>body{{font-family:Arial; margin:20px;}} .log{{margin:10px 0;}}</style>
+</head>
+<body>
+    <h1>{feature_title}</h1>
+    <div>
+        <input type="number" id="steps" placeholder="Steps today">
+        <button onclick="logSteps()">Log Steps</button>
+    </div>
+    <div id="logs"></div>
+    <script>
+        function logSteps() {{
+            const steps = document.getElementById('steps').value;
+            document.getElementById('logs').innerHTML += `<div class="log">Logged {{steps}} steps</div>`;
+        }}
+    </script>
+</body>
+</html>"""
+    elif feature == "task-management":
+        return f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>{title} - {feature_title}</title>
+    <style>body{{font-family:Arial; margin:20px;}} .task{{margin:5px 0;}}</style>
+</head>
+<body>
+    <h1>{feature_title}</h1>
+    <input type="text" id="newTask" placeholder="New task">
+    <button onclick="addTask()">Add Task</button>
+    <div id="tasks"></div>
+    <script>
+        let tasks = [];
+        function addTask() {{
+            const task = document.getElementById('newTask').value;
+            tasks.push(task);
+            document.getElementById('newTask').value = '';
+            renderTasks();
+        }}
+        function renderTasks() {{
+            document.getElementById('tasks').innerHTML = tasks.map(t => `<div class="task">○ {{t}}</div>`).join('');
+        }}
+    </script>
+</body>
+</html>"""
+    else:
+        return f"""<!DOCTYPE html>
+<html>
+<head>
+    <title>{title} - {feature_title}</title>
+</head>
+<body>
+    <h1>{feature_title}</h1>
+    <p>UI untuk fitur {feature}.</p>
+</body>
+</html>"""
 
 
 if __name__ == "__main__":
