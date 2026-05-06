@@ -1,6 +1,7 @@
 import argparse
 import json
 import random
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -313,7 +314,27 @@ def create_project_web_ui(project_dir: Path, metadata: dict) -> None:
     metadata["files"].append(str(Path("web") / "index.html"))
 
 
-def run_generation(name: str | None = None) -> Path:
+def preview_candidate(metadata: dict) -> None:
+    print("\n=== Preview Aplikasi ===")
+    print(f"Judul        : {metadata['title']}")
+    print(f"Deskripsi    : {metadata['description']}")
+    print(f"Tema         : {', '.join(metadata['themes'])}")
+    print(f"Bahasa       : {metadata['language']['name']}")
+    print(f"File awal    : {metadata['language']['file']}")
+    print(f"Folder tujuan: {metadata['name']}")
+    print("========================\n")
+
+
+def ensure_unique_folder_name(base_name: str) -> str:
+    candidate = base_name
+    counter = 1
+    while (OUTPUT_DIR / candidate).exists():
+        candidate = f"{base_name}_{counter}"
+        counter += 1
+    return candidate
+
+
+def build_candidate(name: str | None = None) -> dict:
     themes = load_json("themes.json")
     languages = load_json("languages.json")["languages"]
     title_patterns = load_json("idea_patterns.json")["patterns"]
@@ -325,30 +346,53 @@ def run_generation(name: str | None = None) -> Path:
     slug = slugify(idea["title"])
     date_part = datetime.now().strftime("%Y%m%d")
     folder_name = f"{date_part}_{slug}" if not name else name
-    project_dir = OUTPUT_DIR / folder_name
+    folder_name = ensure_unique_folder_name(folder_name)
+
+    return build_project_metadata(folder_name, combination, language, idea)
+
+
+def create_project_files(metadata: dict) -> Path:
+    project_dir = OUTPUT_DIR / metadata["name"]
     project_dir.mkdir(parents=True, exist_ok=True)
-
-    metadata = build_project_metadata(folder_name, combination, language, idea)
-    readme_text = build_readme_contents(metadata)
-
-    write_file(project_dir / "README.md", readme_text)
-    create_placeholder_file(project_dir, language["key"], metadata)
+    write_file(project_dir / "README.md", build_readme_contents(metadata))
+    create_placeholder_file(project_dir, metadata["language"]["key"], metadata)
     create_project_web_ui(project_dir, metadata)
-    notes_text = AIWriter.build_notes(metadata)
-    write_file(project_dir / "ai_notes.md", notes_text)
+    write_file(project_dir / "ai_notes.md", AIWriter.build_notes(metadata))
     build_manifest(project_dir, metadata)
-
     return project_dir
+
+
+def run_generation(name: str | None = None, auto: bool = False) -> Path | None:
+    while True:
+        metadata = build_candidate(name)
+        if auto:
+            return create_project_files(metadata)
+
+        preview_candidate(metadata)
+        answer = input("Apakah ingin membuat aplikasi ini? (y/n): ").strip().lower()
+        if answer in {"y", "yes"}:
+            return create_project_files(metadata)
+        if answer in {"n", "no"}:
+            again = input("Coba ide lain? (y/n): ").strip().lower()
+            if again in {"y", "yes"}:
+                continue
+            print("Tidak ada proyek dibuat.")
+            return None
+        print("Masukkan y atau n.")
 
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate a unique Master APP project")
     parser.add_argument("--name", type=str, help="Custom output folder name")
+    parser.add_argument("--auto", action="store_true", help="Buat proyek langsung tanpa konfirmasi")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     args = parse_arguments()
-    project_path = run_generation(args.name)
-    print(f"Generated project: {project_path}")
+    project_path = run_generation(args.name, auto=args.auto)
+    if project_path:
+        print(f"Generated project: {project_path}")
+    else:
+        print("Tidak ada proyek yang dibuat.")

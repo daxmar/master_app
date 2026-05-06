@@ -15,11 +15,17 @@ Sebuah sistem generator aplikasi harian yang menghasilkan ide unik secara otomat
    ```sh
    python run_generator.py
    ```
-3. Untuk mode manual dengan nama khusus:
+   - Generator akan menampilkan ide aplikasi dan meminta persetujuan.
+   - Jika kamu setuju, folder akan dibuat otomatis dan file akan dimasukkan ke dalamnya.
+3. Untuk mode langsung tanpa konfirmasi:
+   ```sh
+   python run_generator.py --auto
+   ```
+4. Untuk mode manual dengan nama khusus:
    ```sh
    python run_generator.py --name "projek-unik"
    ```
-4. Output akan dibuat di `output/`
+5. Output akan dibuat di `output/`
 
 ## Struktur Proyek
 - `run_generator.py` : entrypoint generator

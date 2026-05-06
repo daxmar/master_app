@@ -1,0 +1,32 @@
+{
+  "name": "approval_test",
+  "title": "Kebiasaan dan Fragmented Playground",
+  "description": "Aplikasi kebiasaan dan fragmented playground yang menyatukan tema Kebiasaan, dengan nuansa Fragmented dan fungsi Ritual. Dibangun sebagai prototype sederhana menggunakan HTML untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.",
+  "created_at": "2026-05-06T01:23:22.758513Z",
+  "themes": [
+    "Kebiasaan",
+    "Fragmented",
+    "Ritual"
+  ],
+  "language": {
+    "key": "html",
+    "name": "HTML",
+    "preferred_themes": [
+      "Seni",
+      "Hiburan",
+      "Retro",
+      "Minimalis",
+      "Kreativitas"
+    ],
+    "file": "index.html"
+  },
+  "files": [
+    "src\\index.html",
+    "web\\index.html"
+  ],
+  "keywords": [
+    "kebiasaan",
+    "fragmented",
+    "ritual"
+  ]
+}
