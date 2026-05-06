@@ -26,6 +26,11 @@ Sebuah sistem generator aplikasi harian yang menghasilkan ide unik secara otomat
 - `ai_agent.py` : modul bantu AI Agent
 - `data/` : tema, bahasa, pola ide
 - `output/` : hasil proyek harian
+- `web/` : UI web statis untuk preview generator
+
+## UI Web Statis
+Buka `web/index.html` di browser untuk melihat preview ide aplikasi, tema, bahasa, dan generate file README/project.json/ai_notes.md secara langsung.
+- Setiap aplikasi yang dibuat juga akan berisi `web/index.html` di folder aplikasinya untuk melihat UI dan prosedur run lokal.
 
 ## Tujuan
 Master APP harus menjadi basis eksperimen kreatif di mana setiap eksekusi menghasilkan aplikasi baru, ide baru, dan peluang eksplorasi multi-bahasa.

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Master APP Static UI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Master APP</h1>
+      <p>UI Web statis untuk melihat ide aplikasi harian, tema silang, dan konsep project.</p>
+    </header>
+
+    <section class="controls">
+      <button id="generateButton">Generate Ide Aplikasi</button>
+      <button id="downloadReadme" disabled>Download README</button>
+      <button id="downloadManifest" disabled>Download project.json</button>
+      <button id="downloadNotes" disabled>Download ai_notes.md</button>
+    </section>
+
+    <section id="result" class="card hidden">
+      <h2 id="projectTitle"></h2>
+      <p id="projectDescription"></p>
+
+      <div class="grid">
+        <div>
+          <h3>Tema</h3>
+          <ul id="themeList"></ul>
+        </div>
+        <div>
+          <h3>Bahasa</h3>
+          <p id="languageName"></p>
+          <p class="note">File awal: <span id="entryFile"></span></p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <h3>Preview Kode</h3>
+        <pre id="codePreview"></pre>
+      </div>
+
+      <div class="metadata-grid">
+        <div><strong>Folder:</strong> <span id="projectFolder"></span></div>
+        <div><strong>Tanggal:</strong> <span id="projectDate"></span></div>
+      </div>
+    </section>
+
+    <section class="info">
+      <h2>Instruksi</h2>
+      <p>Buka halaman ini di browser, klik <strong>Generate Ide Aplikasi</strong>, dan unduh file README, project.json, serta catatan AI untuk proyek preview.</p>
+      <p>Karena ini adalah UI statis, halaman hanya membuat preview proyek di browser. Untuk menghasilkan folder proyek otomatis, jalankan `python run_generator.py` di terminal.</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

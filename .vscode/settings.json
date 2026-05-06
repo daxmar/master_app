@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^Set-Location -LiteralPath 'd:\\\\project\\\\master_app'; python -m py_compile run_generator\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
