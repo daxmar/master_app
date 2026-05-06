@@ -1,0 +1,32 @@
+{
+  "name": "test_master_app",
+  "title": "Meditasi Produktivitas Journey",
+  "description": "Aplikasi meditasi produktivitas journey yang menyatukan tema Produktivitas, dengan nuansa Meditasi dan fungsi VR. Dibangun sebagai prototype sederhana menggunakan JavaScript untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.",
+  "created_at": "2026-05-06T01:03:32.018986Z",
+  "themes": [
+    "Produktivitas",
+    "Meditasi",
+    "VR"
+  ],
+  "language": {
+    "key": "javascript",
+    "name": "JavaScript",
+    "preferred_themes": [
+      "Hiburan",
+      "Sosial",
+      "Musik",
+      "Game",
+      "Kreativitas",
+      "IoT",
+      "Media"
+    ]
+  },
+  "files": [
+    "src\\index.js"
+  ],
+  "keywords": [
+    "produktivitas",
+    "meditasi",
+    "vr"
+  ]
+}

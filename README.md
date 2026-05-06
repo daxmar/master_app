@@ -1,0 +1,31 @@
+# Master APP
+
+Sebuah sistem generator aplikasi harian yang menghasilkan ide unik secara otomatis dan membuat proyek baru setiap kali dijalankan.
+
+## Fitur
+- Menghasilkan ide aplikasi berdasarkan kombinasi tema dan gaya abstrak
+- Memilih bahasa pemrograman secara dinamis
+- Membuat folder proyek baru dengan nama tanggal unik
+- Menyediakan `README.md`, `project.json`, dan `ai_notes.md` setiap output
+- Memiliki modul AI Agent untuk mendokumentasikan dan menyarankan stack
+
+## Menjalankan
+1. Pastikan Python 3.10+ terpasang
+2. Jalankan:
+   ```sh
+   python run_generator.py
+   ```
+3. Untuk mode manual dengan nama khusus:
+   ```sh
+   python run_generator.py --name "projek-unik"
+   ```
+4. Output akan dibuat di `output/`
+
+## Struktur Proyek
+- `run_generator.py` : entrypoint generator
+- `ai_agent.py` : modul bantu AI Agent
+- `data/` : tema, bahasa, pola ide
+- `output/` : hasil proyek harian
+
+## Tujuan
+Master APP harus menjadi basis eksperimen kreatif di mana setiap eksekusi menghasilkan aplikasi baru, ide baru, dan peluang eksplorasi multi-bahasa.

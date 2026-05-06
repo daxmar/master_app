@@ -1,0 +1,34 @@
+{
+  "languages": [
+    {
+      "key": "python",
+      "name": "Python",
+      "preferred_themes": ["Edukasi", "Data", "Kesehatan", "AI", "Produktivitas", "Sains", "Komunikasi"]
+    },
+    {
+      "key": "javascript",
+      "name": "JavaScript",
+      "preferred_themes": ["Hiburan", "Sosial", "Musik", "Game", "Kreativitas", "IoT", "Media"]
+    },
+    {
+      "key": "typescript",
+      "name": "TypeScript",
+      "preferred_themes": ["Produktivitas", "Edukasi", "Keuangan", "Komunikasi", "Data", "Keamanan"]
+    },
+    {
+      "key": "go",
+      "name": "Go",
+      "preferred_themes": ["IoT", "Keamanan", "Data", "Produktivitas", "Server", "Koneksi"]
+    },
+    {
+      "key": "rust",
+      "name": "Rust",
+      "preferred_themes": ["Keamanan", "IoT", "Sistem", "Kuantum", "Retro"]
+    },
+    {
+      "key": "html",
+      "name": "HTML",
+      "preferred_themes": ["Seni", "Hiburan", "Retro", "Minimalis", "Kreativitas"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "patterns": [
+    "{theme} {style} Explorer",
+    "{theme} {twist} Companion",
+    "{theme} dan {style} Playground",
+    "{style} {theme} Studio",
+    "{twist} {theme} Lab",
+    "{theme} {style} Memory",
+    "{style} {theme} Journey",
+    "{theme} {twist} Portal",
+    "{theme} {style} Assistant",
+    "{style} {twist} Dashboard"
+  ]
+}
