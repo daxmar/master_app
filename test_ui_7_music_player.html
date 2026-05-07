@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player - Music Player</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .player {
+            padding: 30px;
+            text-align: center;
+        }
+        .album-art {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .track-info {
+            margin-bottom: 30px;
+        }
+        .track-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .artist {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 3px;
+            width: 0%;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .control-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            background: #28a745;
+        }
+        .play-btn:hover {
+            background: #218838;
+        }
+        .playlist {
+            margin-top: 40px;
+        }
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .playlist-item:hover {
+            background: #f8f9fa;
+        }
+        .playlist-item.active {
+            background: #e3f2fd;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Music Player</h1>
+            <p>Music Player & Audio Experience - Tema: Musik</p>
+        </div>
+
+        <div class="player">
+            <div class="album-art" id="albumArt">🎵</div>
+
+            <div class="track-info">
+                <div class="track-title" id="trackTitle">Select a track to play</div>
+                <div class="artist" id="artist">Choose from playlist below</div>
+                <div id="timeDisplay">0:00 / 0:00</div>
+            </div>
+
+            <div class="progress-bar" onclick="seek(event)">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="previousTrack()">⏮️</button>
+                <button class="control-btn play-btn" id="playBtn" onclick="togglePlay()">▶️</button>
+                <button class="control-btn" onclick="nextTrack()">⏭️</button>
+                <button onclick="toggleShuffle()">🔀</button>
+                <button onclick="toggleRepeat()">🔁</button>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <input type="range" id="volumeSlider" min="0" max="100" value="70" onchange="setVolume(this.value)">
+                <label for="volumeSlider">🔊 Volume: <span id="volumeValue">70</span>%</label>
+            </div>
+        </div>
+
+        <div class="playlist">
+            <h3 style="text-align: center; margin-bottom: 20px;">🎶 Playlist</h3>
+            <div id="playlist">
+                <div class="playlist-item active" onclick="selectTrack(0)">
+                    <div>
+                        <div style="font-weight: bold;">Ocean Waves</div>
+                        <div style="color: #666; font-size: 0.9em;">Nature Sounds</div>
+                    </div>
+                    <div>3:24</div>
+                </div>
+                <div class="playlist-item" onclick="selectTrack(1)">
+                    <div>
+                        <div style="font-weight: bold;">Forest Ambience</div>
+                        <div style="color: #666; font-size: 0.9em;">Relaxation</div>
+                    </div>
+                    <div>4:12</div>
+                </div>
+                <div class="playlist-item" onclick="selectTrack(2)">
+                    <div>
+                        <div style="font-weight: bold;">Rain Sounds</div>
+                        <div style="color: #666; font-size: 0.9em;">Sleep Aid</div>
+                    </div>
+                    <div>2:58</div>
+                </div>
+                <div class="playlist-item" onclick="selectTrack(3)">
+                    <div>
+                        <div style="font-weight: bold;">Jazz Piano</div>
+                        <div style="color: #666; font-size: 0.9em;">Instrumental</div>
+                    </div>
+                    <div>5:43</div>
+                </div>
+                <div class="playlist-item" onclick="selectTrack(4)">
+                    <div>
+                        <div style="font-weight: bold;">Electronic Beats</div>
+                        <div style="color: #666; font-size: 0.9em;">EDM</div>
+                    </div>
+                    <div>3:57</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <button onclick="createPlaylist()">➕ Create Playlist</button>
+            <button onclick="importMusic()">📁 Import Music</button>
+            <button onclick="equalizerSettings()">🎛️ Equalizer</button>
+        </div>
+
+        <div class="output">
+            <h3>Music Activity Log</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to Music Player! Select a track from the playlist above to start listening.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTrack = 0;
+        let isPlaying = false;
+        let currentTime = 0;
+        let duration = 0;
+        let volume = 70;
+        let shuffle = false;
+        let repeat = false;
+
+        const tracks = [
+            {title: 'Ocean Waves', artist: 'Nature Sounds', duration: 204},
+            {title: 'Forest Ambience', artist: 'Relaxation', duration: 252},
+            {title: 'Rain Sounds', artist: 'Sleep Aid', duration: 178},
+            {title: 'Jazz Piano', artist: 'Instrumental', duration: 343},
+            {title: 'Electronic Beats', artist: 'EDM', duration: 237}
+        ];
+
+        function selectTrack(index) {
+            currentTrack = index;
+            currentTime = 0;
+            updateTrackDisplay();
+            updatePlaylistUI();
+            if (isPlaying) {
+                // Would start actual playback here
+            }
+            const output = document.getElementById('outputContent');
+            output.textContent = `🎵 Selected: ${tracks[currentTrack].title} by ${tracks[currentTrack].artist}\n\nReady to play!`;
+        }
+
+        function updateTrackDisplay() {
+            const track = tracks[currentTrack];
+            document.getElementById('trackTitle').textContent = track.title;
+            document.getElementById('artist').textContent = track.artist;
+            duration = track.duration;
+            updateTimeDisplay();
+        }
+
+        function updateTimeDisplay() {
+            const current = formatTime(currentTime);
+            const total = formatTime(duration);
+            document.getElementById('timeDisplay').textContent = `${current} / ${total}`;
+            const progressPercent = (currentTime / duration) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const playBtn = document.getElementById('playBtn');
+            const output = document.getElementById('outputContent');
+
+            if (isPlaying) {
+                playBtn.textContent = '⏸️';
+                output.textContent = `▶️ Now playing: ${tracks[currentTrack].title}\n\n`;
+                output.textContent += `🎵 Artist: ${tracks[currentTrack].artist}\n`;
+                output.textContent += `⏱️ Duration: ${formatTime(duration)}\n`;
+                output.textContent += `🔊 Volume: ${volume}%\n\n`;
+                output.textContent += `🎶 Enjoy your music!`;
+
+                // Simulate playback progress
+                const progressInterval = setInterval(() => {
+                    if (!isPlaying) {
+                        clearInterval(progressInterval);
+                        return;
+                    }
+                    currentTime += 1;
+                    if (currentTime >= duration) {
+                        if (repeat) {
+                            currentTime = 0;
+                        } else {
+                            nextTrack();
+                        }
+                    }
+                    updateTimeDisplay();
+                }, 1000);
+            } else {
+                playBtn.textContent = '▶️';
+                output.textContent = `⏸️ Paused: ${tracks[currentTrack].title}\n\nResume playback when ready.`;
+            }
+        }
+
+        function nextTrack() {
+            if (shuffle) {
+                currentTrack = Math.floor(Math.random() * tracks.length);
+            } else {
+                currentTrack = (currentTrack + 1) % tracks.length;
+            }
+            selectTrack(currentTrack);
+            if (isPlaying) {
+                // Would continue playback
+            }
+        }
+
+        function previousTrack() {
+            currentTrack = currentTrack > 0 ? currentTrack - 1 : tracks.length - 1;
+            selectTrack(currentTrack);
+            if (isPlaying) {
+                // Would continue playback
+            }
+        }
+
+        function seek(event) {
+            const progressBar = event.target;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            currentTime = Math.floor(percentage * duration);
+            updateTimeDisplay();
+        }
+
+        function setVolume(value) {
+            volume = value;
+            document.getElementById('volumeValue').textContent = volume;
+            const output = document.getElementById('outputContent');
+            output.textContent += `\n\n🔊 Volume set to ${volume}%`;
+        }
+
+        function toggleShuffle() {
+            shuffle = !shuffle;
+            const output = document.getElementById('outputContent');
+            output.textContent += `\n\n🔀 Shuffle ${shuffle ? 'enabled' : 'disabled'}`;
+        }
+
+        function toggleRepeat() {
+            repeat = !repeat;
+            const output = document.getElementById('outputContent');
+            output.textContent += `\n\n🔁 Repeat ${repeat ? 'enabled' : 'disabled'}`;
+        }
+
+        function updatePlaylistUI() {
+            const items = document.querySelectorAll('.playlist-item');
+            items.forEach((item, index) => {
+                item.classList.toggle('active', index === currentTrack);
+            });
+        }
+
+        function createPlaylist() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `➕ Creating new playlist...\n\n`;
+            output.textContent += `📝 Playlist name: "My Favorites"\n`;
+            output.textContent += `🎵 Tracks added: 0\n`;
+            output.textContent += `⏱️ Total duration: 0:00\n\n`;
+            output.textContent += `💡 Add tracks to your playlist by selecting them!`;
+        }
+
+        function importMusic() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📁 Importing music files...\n\n`;
+            output.textContent += `🔍 Scanning music folder...\n`;
+            output.textContent += `📊 Found 15 audio files\n`;
+            output.textContent += `🎵 Added to library: 12 tracks\n`;
+            output.textContent += `⚠️ Skipped 3 unsupported files\n\n`;
+            output.textContent += `✅ Import complete!`;
+        }
+
+        function equalizerSettings() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🎛️ Audio Equalizer Settings\n\n`;
+            output.textContent += `🎚️ Bass: +2dB\n`;
+            output.textContent += `🎚️ Mid: 0dB\n`;
+            output.textContent += `🎚️ Treble: +1dB\n`;
+            output.textContent += `🎚️ Presence: 0dB\n\n`;
+            output.textContent += `🎛️ Preset: "Rock"\n`;
+            output.textContent += `🔊 Balance: Center\n\n`;
+            output.textContent += `💡 Adjust settings for optimal sound quality!`;
+        }
+
+        // Initialize
+        updateTrackDisplay();
+        updatePlaylistUI();
+    </script>
+</body>
+</html>

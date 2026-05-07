@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub - Game Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .game-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .score-display {
+            font-size: 2em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Game Hub</h1>
+            <p>Game Hub & Entertainment - Tema: Game</p>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <div class="score-display">
+                Total Score: <span id="totalScore">0</span> | Games Played: <span id="gamesPlayed">0</span>
+            </div>
+        </div>
+
+        <div class="game-grid">
+            <div class="game-card" onclick="playNumberGuess()">
+                <div class="game-icon">🔢</div>
+                <h3>Number Guessing</h3>
+                <p>Guess the secret number!</p>
+                <small>High Score: 5 attempts</small>
+            </div>
+            <div class="game-card" onclick="playWordPuzzle()">
+                <div class="game-icon">📝</div>
+                <h3>Word Puzzle</h3>
+                <p>Unscramble the words!</p>
+                <small>High Score: 120 pts</small>
+            </div>
+            <div class="game-card" onclick="playMemoryGame()">
+                <div class="game-icon">🧠</div>
+                <h3>Memory Challenge</h3>
+                <p>Remember the sequence!</p>
+                <small>High Score: 15 levels</small>
+            </div>
+            <div class="game-card" onclick="playTrivia()">
+                <div class="game-icon">🧠</div>
+                <h3>Trivia Quiz</h3>
+                <p>Test your knowledge!</p>
+                <small>High Score: 95%</small>
+            </div>
+            <div class="game-card" onclick="playReaction()">
+                <div class="game-icon">⚡</div>
+                <h3>Reaction Time</h3>
+                <p>How fast are you?</p>
+                <small>Best Time: 0.23s</small>
+            </div>
+            <div class="game-card" onclick="playMathQuiz()">
+                <div class="game-icon">🔢</div>
+                <h3>Math Quiz</h3>
+                <p>Quick calculations!</p>
+                <small>High Score: 25 correct</small>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <button onclick="viewLeaderboard()">🏆 Leaderboard</button>
+            <button onclick="resetScores()">🔄 Reset Scores</button>
+            <button onclick="gameSettings()">⚙️ Settings</button>
+        </div>
+
+        <div class="output">
+            <h3>Game Activity</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to Game Hub! Choose a game from the grid above to start playing.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let totalScore = 0;
+        let gamesPlayed = 0;
+        let currentGame = null;
+
+        function updateScoreDisplay() {
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('gamesPlayed').textContent = gamesPlayed;
+        }
+
+        function playNumberGuess() {
+            const output = document.getElementById('outputContent');
+            output.textContent = '🔢 Starting Number Guessing Game!\n\n';
+            output.textContent += 'I'm thinking of a number between 1 and 100...\n\n';
+            let attempts = 0;
+            const secretNumber = Math.floor(Math.random() * 100) + 1;
+
+            currentGame = {
+                type: 'number_guess',
+                secret: secretNumber,
+                attempts: 0,
+                guess: function(num) {
+                    this.attempts++;
+                    if (num === this.secret) {
+                        const points = Math.max(100 - this.attempts * 10, 10);
+                        totalScore += points;
+                        gamesPlayed++;
+                        updateScoreDisplay();
+                        output.textContent += `\n🎉 Correct! You got it in ${this.attempts} attempts.\n🏆 Earned ${points} points!\n`;
+                        currentGame = null;
+                    } else if (num < this.secret) {
+                        output.textContent += `\n📉 Too low! Try higher.\n`;
+                    } else {
+                        output.textContent += `\n📈 Too high! Try lower.\n`;
+                    }
+                }
+            };
+        }
+
+        function playWordPuzzle() {
+            const output = document.getElementById('outputContent');
+            const words = [
+                {scrambled: 'tobor', answer: 'robot'},
+                {scrambled: 'mupetc', answer: 'compute'},
+                {scrambled: 'gamenig', answer: 'gaming'}
+            ];
+            const word = words[Math.floor(Math.random() * words.length)];
+
+            output.textContent = `📝 Word Puzzle Challenge!\n\n`;
+            output.textContent += `Unscramble: ${word.scrambled.toUpperCase()}\n\n`;
+            output.textContent += `Hint: It's related to technology/games.\n`;
+
+            currentGame = {
+                type: 'word_puzzle',
+                answer: word.answer,
+                scrambled: word.scrambled,
+                solve: function(guess) {
+                    if (guess.toLowerCase() === this.answer) {
+                        const points = 50;
+                        totalScore += points;
+                        gamesPlayed++;
+                        updateScoreDisplay();
+                        output.textContent += `\n🎉 Correct! "${this.answer}" is right!\n🏆 Earned ${points} points!\n`;
+                        currentGame = null;
+                    } else {
+                        output.textContent += `\n❌ Not quite right. Try again!\n`;
+                    }
+                }
+            };
+        }
+
+        function playMemoryGame() {
+            const output = document.getElementById('outputContent');
+            output.textContent = '🧠 Memory Challenge Starting!\n\n';
+            output.textContent += 'Watch the sequence carefully...\n\n';
+
+            const colors = ['🔴', '🔵', '🟢', '🟡'];
+            let sequence = [];
+            let playerSequence = [];
+            let level = 1;
+
+            function showSequence() {
+                output.textContent = `🧠 Level ${level} - Watch closely:\n`;
+                sequence.forEach((color, i) => {
+                    setTimeout(() => {
+                        output.textContent += color + ' ';
+                    }, i * 1000);
+                });
+                setTimeout(() => {
+                    output.textContent += '\n\n🎯 Your turn! Repeat the sequence.\n';
+                }, sequence.length * 1000 + 500);
+            }
+
+            function nextLevel() {
+                sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+                showSequence();
+            }
+
+            currentGame = {
+                type: 'memory',
+                sequence: sequence,
+                playerSequence: playerSequence,
+                level: level,
+                nextLevel: nextLevel,
+                checkSequence: function(color) {
+                    // This would need more complex input handling
+                    output.textContent += `Clicked: ${color}\n`;
+                }
+            };
+
+            nextLevel();
+        }
+
+        function playTrivia() {
+            const output = document.getElementById('outputContent');
+            const questions = [
+                {
+                    q: 'What does CPU stand for?',
+                    a: 'central processing unit',
+                    options: ['central processing unit', 'computer power unit', 'central program utility']
+                },
+                {
+                    q: 'Which programming language was created by Guido van Rossum?',
+                    a: 'python',
+                    options: ['python', 'java', 'javascript']
+                }
+            ];
+
+            const q = questions[Math.floor(Math.random() * questions.length)];
+            output.textContent = `🧠 Trivia Question!\n\n${q.q}\n\n`;
+            q.options.forEach((opt, i) => {
+                output.textContent += `${i + 1}. ${opt}\n`;
+            });
+
+            currentGame = {
+                type: 'trivia',
+                answer: q.a,
+                check: function(choice) {
+                    const selected = q.options[choice - 1];
+                    if (selected && selected.toLowerCase() === this.answer) {
+                        const points = 25;
+                        totalScore += points;
+                        gamesPlayed++;
+                        updateScoreDisplay();
+                        output.textContent += `\n✅ Correct! Well done!\n🏆 Earned ${points} points!\n`;
+                        currentGame = null;
+                    } else {
+                        output.textContent += `\n❌ Incorrect. The answer was: ${this.answer}\n`;
+                        currentGame = null;
+                    }
+                }
+            };
+        }
+
+        function playReaction() {
+            const output = document.getElementById('outputContent');
+            output.textContent = '⚡ Reaction Time Test!\n\n';
+            output.textContent += 'Get ready...\n';
+
+            setTimeout(() => {
+                const startTime = Date.now();
+                output.textContent += '🟢 CLICK NOW!\n';
+
+                currentGame = {
+                    type: 'reaction',
+                    startTime: startTime,
+                    click: function() {
+                        const reactionTime = Date.now() - this.startTime;
+                        const points = Math.max(100 - Math.floor(reactionTime / 10), 10);
+                        totalScore += points;
+                        gamesPlayed++;
+                        updateScoreDisplay();
+                        output.textContent += `\n⚡ Reaction time: ${reactionTime}ms\n🏆 Earned ${points} points!\n`;
+                        currentGame = null;
+                    }
+                };
+            }, Math.random() * 3000 + 1000);
+        }
+
+        function playMathQuiz() {
+            const output = document.getElementById('outputContent');
+            const num1 = Math.floor(Math.random() * 20) + 1;
+            const num2 = Math.floor(Math.random() * 20) + 1;
+            const answer = num1 + num2;
+
+            output.textContent = `🔢 Math Quiz!\n\nWhat is ${num1} + ${num2}?\n`;
+
+            currentGame = {
+                type: 'math',
+                answer: answer,
+                check: function(guess) {
+                    if (parseInt(guess) === this.answer) {
+                        const points = 10;
+                        totalScore += points;
+                        gamesPlayed++;
+                        updateScoreDisplay();
+                        output.textContent += `\n✅ Correct! ${num1} + ${num2} = ${this.answer}\n🏆 Earned ${points} points!\n`;
+                        currentGame = null;
+                    } else {
+                        output.textContent += `\n❌ Incorrect. The answer is ${this.answer}.\n`;
+                        currentGame = null;
+                    }
+                }
+            };
+        }
+
+        function viewLeaderboard() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🏆 Game Leaderboard\n\n`;
+            output.textContent += `🎯 Total Score: ${totalScore}\n`;
+            output.textContent += `🎮 Games Played: ${gamesPlayed}\n`;
+            output.textContent += `📊 Average Score: ${gamesPlayed > 0 ? Math.round(totalScore / gamesPlayed) : 0}\n\n`;
+            output.textContent += `🏅 Achievements:\n`;
+            if (totalScore >= 500) output.textContent += `  - 🏆 Master Gamer\n`;
+            if (gamesPlayed >= 10) output.textContent += `  - 🎮 Game Addict\n`;
+            if (totalScore >= 1000) output.textContent += `  - 💎 Diamond Player\n`;
+        }
+
+        function resetScores() {
+            if (confirm('Reset all scores and progress?')) {
+                totalScore = 0;
+                gamesPlayed = 0;
+                updateScoreDisplay();
+                const output = document.getElementById('outputContent');
+                output.textContent = '🔄 Scores reset! Start fresh and beat your records!';
+            }
+        }
+
+        function gameSettings() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `⚙️ Game Settings\n\n`;
+            output.textContent += `🎵 Sound Effects: Enabled\n`;
+            output.textContent += `🌈 Visual Effects: Enabled\n`;
+            output.textContent += `⏱️ Time Limits: Standard\n`;
+            output.textContent += `🎯 Difficulty: Normal\n\n`;
+            output.textContent += `💡 Tip: Play regularly to improve your scores!`;
+        }
+    </script>
+</body>
+</html>

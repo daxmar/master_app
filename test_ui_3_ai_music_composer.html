@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Music Composer - AI Music Composer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .composer {
+            padding: 30px;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .control-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .play-btn {
+            background: #28a745;
+            font-size: 1.2em;
+            padding: 15px 30px;
+        }
+        .play-btn:hover {
+            background: #218838;
+        }
+        .piano {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .key {
+            width: 40px;
+            height: 120px;
+            background: white;
+            border: 1px solid #ccc;
+            margin: 0 2px;
+            cursor: pointer;
+            border-radius: 0 0 5px 5px;
+            transition: all 0.1s ease;
+        }
+        .key:active {
+            background: #e9ecef;
+            transform: scale(0.98);
+        }
+        .black-key {
+            width: 25px;
+            height: 80px;
+            background: black;
+            color: white;
+            position: relative;
+            z-index: 1;
+            margin-left: -12px;
+            margin-right: -12px;
+            border-radius: 0 0 3px 3px;
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎼 AI Music Composer</h1>
+            <p>AI-Powered Music Composer - Tema: AI, Musik</p>
+        </div>
+
+        <div class="composer">
+            <div class="controls">
+                <div class="control-group">
+                    <h3>🎵 Genre</h3>
+                    <select id="genre" style="width: 100%; padding: 8px; border-radius: 5px;">
+                        <option>Jazz</option>
+                        <option>Classical</option>
+                        <option>Electronic</option>
+                        <option>Ambient</option>
+                        <option>Rock</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <h3>🎼 Tempo</h3>
+                    <input type="range" id="tempo" class="slider" min="60" max="180" value="120">
+                    <div id="tempoValue">120 BPM</div>
+                </div>
+                <div class="control-group">
+                    <h3>🎹 Complexity</h3>
+                    <input type="range" id="complexity" class="slider" min="1" max="10" value="5">
+                    <div id="complexityValue">Level 5</div>
+                </div>
+                <div class="control-group">
+                    <h3>🎶 Mood</h3>
+                    <select id="mood" style="width: 100%; padding: 8px; border-radius: 5px;">
+                        <option>Happy</option>
+                        <option>Melancholic</option>
+                        <option>Energetic</option>
+                        <option>Calm</option>
+                        <option>Mysterious</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button class="play-btn" onclick="generateComposition()">🎼 Generate AI Composition</button>
+                <button onclick="playComposition()">▶️ Play</button>
+                <button onclick="stopPlayback()">⏹️ Stop</button>
+                <button onclick="saveComposition()">💾 Save</button>
+            </div>
+
+            <div class="piano">
+                <div class="key" onclick="playNote('C4')">C</div>
+                <div class="key black-key" onclick="playNote('C#4')">C#</div>
+                <div class="key" onclick="playNote('D4')">D</div>
+                <div class="key black-key" onclick="playNote('D#4')">D#</div>
+                <div class="key" onclick="playNote('E4')">E</div>
+                <div class="key" onclick="playNote('F4')">F</div>
+                <div class="key black-key" onclick="playNote('F#4')">F#</div>
+                <div class="key" onclick="playNote('G4')">G</div>
+                <div class="key black-key" onclick="playNote('G#4')">G#</div>
+                <div class="key" onclick="playNote('A4')">A</div>
+                <div class="key black-key" onclick="playNote('A#4')">A#</div>
+                <div class="key" onclick="playNote('B4')">B</div>
+            </div>
+        </div>
+
+        <div class="output">
+            <h3>AI Composer Log</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to AI Music Composer! Adjust the settings above and click "Generate AI Composition" to create music.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentComposition = [];
+        let isPlaying = false;
+
+        document.getElementById('tempo').addEventListener('input', function() {
+            document.getElementById('tempoValue').textContent = this.value + ' BPM';
+        });
+
+        document.getElementById('complexity').addEventListener('input', function() {
+            document.getElementById('complexityValue').textContent = 'Level ' + this.value;
+        });
+
+        function generateComposition() {
+            const genre = document.getElementById('genre').value;
+            const tempo = document.getElementById('tempo').value;
+            const complexity = document.getElementById('complexity').value;
+            const mood = document.getElementById('mood').value;
+
+            const output = document.getElementById('outputContent');
+            output.textContent = `🎼 Generating AI Composition...\n\n`;
+            output.textContent += `Genre: ${genre}\n`;
+            output.textContent += `Tempo: ${tempo} BPM\n`;
+            output.textContent += `Complexity: Level ${complexity}\n`;
+            output.textContent += `Mood: ${mood}\n\n`;
+
+            // Simulate AI composition generation
+            setTimeout(() => {
+                const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
+                currentComposition = [];
+                const length = parseInt(complexity) * 8;
+
+                for (let i = 0; i < length; i++) {
+                    const note = notes[Math.floor(Math.random() * notes.length)];
+                    const duration = Math.random() > 0.7 ? 'half' : 'quarter';
+                    currentComposition.push({note, duration});
+                }
+
+                output.textContent += `✅ Composition generated!\n`;
+                output.textContent += `Length: ${currentComposition.length} notes\n`;
+                output.textContent += `Key signature: C Major\n`;
+                output.textContent += `AI Analysis: ${mood.toLowerCase()} melody with ${genre.toLowerCase()} influences\n\n`;
+                output.textContent += `🎵 Ready to play! Click the Play button.`;
+            }, 2000);
+        }
+
+        function playComposition() {
+            if (currentComposition.length === 0) {
+                alert('Generate a composition first!');
+                return;
+            }
+
+            if (isPlaying) return;
+            isPlaying = true;
+
+            const output = document.getElementById('outputContent');
+            output.textContent += '\n\n▶️ Playing composition...\n';
+
+            let index = 0;
+            const tempo = parseInt(document.getElementById('tempo').value);
+            const noteDuration = 60000 / tempo / 4; // quarter note duration in ms
+
+            const playNext = () => {
+                if (!isPlaying || index >= currentComposition.length) {
+                    isPlaying = false;
+                    output.textContent += '\n\n⏹️ Playback finished!';
+                    return;
+                }
+
+                const note = currentComposition[index];
+                playNote(note.note);
+                output.textContent += `♪ ${note.note} `;
+
+                index++;
+                setTimeout(playNext, noteDuration * (note.duration === 'half' ? 2 : 1));
+            };
+
+            playNext();
+        }
+
+        function stopPlayback() {
+            isPlaying = false;
+            const output = document.getElementById('outputContent');
+            output.textContent += '\n\n⏹️ Playback stopped.';
+        }
+
+        function playNote(note) {
+            // Visual feedback
+            const keys = document.querySelectorAll('.key');
+            keys.forEach(key => {
+                if (key.textContent.trim() === note.replace(/[0-9]/g, '')) {
+                    key.style.background = '#007bff';
+                    setTimeout(() => {
+                        key.style.background = key.classList.contains('black-key') ? 'black' : 'white';
+                    }, 200);
+                }
+            });
+
+            // Simulate audio (would need Web Audio API for real sound)
+            console.log(`Playing note: ${note}`);
+        }
+
+        function saveComposition() {
+            if (currentComposition.length === 0) {
+                alert('Generate a composition first!');
+                return;
+            }
+
+            const output = document.getElementById('outputContent');
+            output.textContent += `\n\n💾 Composition saved as 'ai_composition_${Date.now()}.json'\n`;
+            output.textContent += `Format: MIDI-ready\n`;
+            output.textContent += `Size: ${JSON.stringify(currentComposition).length} bytes`;
+        }
+    </script>
+</body>
+</html>

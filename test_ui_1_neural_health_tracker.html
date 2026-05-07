@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Health Tracker - Neural Health Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .brain-wave {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .output {
+            padding: 30px;
+            background: white;
+        }
+        .output-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Neural Health Tracker</h1>
+            <p>Neural Health & Wellness Tracker - Tema: Kesehatan, Neural</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="metric-card">
+                <h3>Stress Level</h3>
+                <div class="metric-value" id="stressLevel">45%</div>
+                <p>Normal range</p>
+            </div>
+            <div class="metric-card">
+                <h3>Focus Score</h3>
+                <div class="metric-value" id="focusScore">78%</div>
+                <p>Good concentration</p>
+            </div>
+            <div class="metric-card">
+                <h3>Sleep Quality</h3>
+                <div class="metric-value" id="sleepQuality">8.2h</div>
+                <p>Excellent rest</p>
+            </div>
+            <div class="metric-card">
+                <h3>Mood Index</h3>
+                <div class="metric-value" id="moodIndex">85%</div>
+                <p>Positive state</p>
+            </div>
+        </div>
+
+        <div class="brain-wave">
+            <h3>🧠 Real-time Neural Activity</h3>
+            <div id="brainActivity">Monitoring brain waves... Alpha: 12Hz | Beta: 18Hz | Theta: 6Hz</div>
+        </div>
+
+        <div class="controls">
+            <button onclick="startMeditation()">🧘 Start Meditation</button>
+            <button onclick="runBreathing()">🫁 Breathing Exercise</button>
+            <button onclick="checkMood()">😊 Mood Check</button>
+            <button onclick="generateReport()">📊 Generate Report</button>
+        </div>
+
+        <div class="output">
+            <h3>Activity Log</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to Neural Health Tracker! Click any button above to begin.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let meditationTimer = null;
+        let breathingCycle = 0;
+
+        function startMeditation() {
+            const output = document.getElementById('outputContent');
+            output.textContent = '🧘 Starting meditation session...\n\n';
+            let timeLeft = 300; // 5 minutes
+            meditationTimer = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                output.textContent = `🧘 Meditation in progress...\nTime remaining: ${minutes}:${seconds.toString().padStart(2, '0')}\n\nFocus on your breath. Neural activity stabilizing...`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(meditationTimer);
+                    output.textContent += '\n\n✅ Meditation complete! Stress level decreased by 15%.';
+                    updateMetrics();
+                }
+            }, 1000);
+        }
+
+        function runBreathing() {
+            const output = document.getElementById('outputContent');
+            breathingCycle++;
+            output.textContent = `🫁 Breathing Exercise #${breathingCycle}\n\n`;
+            output.textContent += 'Inhale deeply... (4 seconds)\nHold... (4 seconds)\nExhale slowly... (6 seconds)\n\n💡 Neural feedback: Heart rate synchronized with breathing pattern.';
+        }
+
+        function checkMood() {
+            const output = document.getElementById('outputContent');
+            const moods = ['Happy 😊', 'Calm 😌', 'Focused 🎯', 'Energetic ⚡', 'Relaxed 🧘'];
+            const randomMood = moods[Math.floor(Math.random() * moods.length)];
+            output.textContent = `😊 Current Mood Assessment\n\nBased on neural patterns: ${randomMood}\n\nAI Recommendation: Continue with positive activities to maintain this state.`;
+        }
+
+        function generateReport() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📊 Daily Neural Health Report\n\n`;
+            output.textContent += `Date: ${new Date().toLocaleDateString()}\n`;
+            output.textContent += `Average Stress Level: 42% (↓8% from yesterday)\n`;
+            output.textContent += `Focus Sessions: 3 completed\n`;
+            output.textContent += `Sleep Quality: Excellent\n`;
+            output.textContent += `Neural Patterns: Balanced brain activity\n\n`;
+            output.textContent += `💡 AI Insight: Your neural health is improving! Keep up the good work.`;
+        }
+
+        function updateMetrics() {
+            const stress = Math.max(30, parseInt(document.getElementById('stressLevel').textContent) - Math.floor(Math.random() * 10));
+            const focus = Math.min(95, parseInt(document.getElementById('focusScore').textContent) + Math.floor(Math.random() * 5));
+            document.getElementById('stressLevel').textContent = stress + '%';
+            document.getElementById('focusScore').textContent = focus + '%';
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const activity = document.getElementById('brainActivity');
+            const alpha = (10 + Math.random() * 5).toFixed(1);
+            const beta = (15 + Math.random() * 10).toFixed(1);
+            const theta = (4 + Math.random() * 4).toFixed(1);
+            activity.textContent = `Monitoring brain waves... Alpha: ${alpha}Hz | Beta: ${beta}Hz | Theta: ${theta}Hz`;
+        }, 3000);
+    </script>
+</body>
+</html>

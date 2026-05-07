@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Productivity Hub - IoT Productivity Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .device-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .device-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .online { background: #28a745; }
+        .offline { background: #dc3545; }
+        .unknown { background: #ffc107; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 2px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .productivity-zone {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: 0 30px 30px 30px;
+            border-radius: 15px;
+        }
+        .task-list {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 IoT Productivity Hub</h1>
+            <p>IoT Productivity Hub - Tema: IoT, Produktivitas</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>💡 Smart Lights</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <p>Living Room: 75% brightness</p>
+                <button onclick="controlLight('living_room', 'on')">Turn On</button>
+                <button onclick="controlLight('living_room', 'off')">Turn Off</button>
+                <button onclick="setBrightness('living_room')">Set Brightness</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>🌡️ Smart Thermostat</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <p>Current: 24°C | Target: 22°C</p>
+                <button onclick="adjustTemp('up')">🔥 +1°C</button>
+                <button onclick="adjustTemp('down')">❄️ -1°C</button>
+                <button onclick="setSchedule()">Set Schedule</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>📷 Security Camera</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <p>Front Door - Motion detected</p>
+                <button onclick="viewCamera('front')">View Live</button>
+                <button onclick="armSecurity()">Arm System</button>
+                <button onclick="checkRecordings()">View Recordings</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>🎧 Smart Speaker</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <p>Playing: Focus Music | Volume: 60%</p>
+                <button onclick="playMusic()">Play Music</button>
+                <button onclick="adjustVolume('up')">🔊 +</button>
+                <button onclick="adjustVolume('down')">🔉 -</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>☕ Smart Coffee Maker</h3>
+                    <span><span class="status-indicator offline"></span>Offline</span>
+                </div>
+                <p>Last brewed: 2 hours ago</p>
+                <button onclick="brewCoffee()">Brew Coffee</button>
+                <button onclick="scheduleBrew()">Schedule Brew</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>🏃‍♂️ Fitness Tracker</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <p>Steps: 8,432 | Goal: 10,000</p>
+                <button onclick="syncFitness()">Sync Data</button>
+                <button onclick="setGoal()">Set Goal</button>
+            </div>
+        </div>
+
+        <div class="productivity-zone">
+            <h2>🎯 Productivity Dashboard</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div style="text-align: center;">
+                    <h3>Focus Time</h3>
+                    <div style="font-size: 2em;">2h 15m</div>
+                </div>
+                <div style="text-align: center;">
+                    <h3>Tasks Completed</h3>
+                    <div style="font-size: 2em;">12/15</div>
+                </div>
+                <div style="text-align: center;">
+                    <h3>Energy Level</h3>
+                    <div style="font-size: 2em;">78%</div>
+                </div>
+                <div style="text-align: center;">
+                    <h3>Break Reminder</h3>
+                    <div style="font-size: 2em;">15m</div>
+                </div>
+            </div>
+
+            <div class="task-list">
+                <h3>Today's Tasks</h3>
+                <div class="task-item">
+                    <span>Meeting with team</span>
+                    <span>14:00</span>
+                </div>
+                <div class="task-item">
+                    <span>Review code changes</span>
+                    <span>16:00</span>
+                </div>
+                <div class="task-item">
+                    <span>Update documentation</span>
+                    <span>17:30</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="output">
+            <h3>IoT Hub Activity Log</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to IoT Productivity Hub! Control your smart devices and track productivity metrics.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let thermostatTemp = 24;
+        let lightBrightness = 75;
+        let speakerVolume = 60;
+
+        function controlLight(room, action) {
+            const output = document.getElementById('outputContent');
+            if (action === 'on') {
+                output.textContent = `💡 Turning on lights in ${room.replace('_', ' ')}...\n✅ Lights activated at ${lightBrightness}% brightness\n`;
+            } else {
+                output.textContent = `💡 Turning off lights in ${room.replace('_', ' ')}...\n✅ Lights deactivated\n`;
+            }
+        }
+
+        function setBrightness(room) {
+            const brightness = prompt('Set brightness (0-100):', lightBrightness);
+            if (brightness !== null) {
+                lightBrightness = Math.max(0, Math.min(100, parseInt(brightness)));
+                const output = document.getElementById('outputContent');
+                output.textContent = `💡 Adjusting brightness in ${room.replace('_', ' ')} to ${lightBrightness}%...\n✅ Brightness updated\n`;
+            }
+        }
+
+        function adjustTemp(direction) {
+            if (direction === 'up') {
+                thermostatTemp += 1;
+            } else {
+                thermostatTemp -= 1;
+            }
+            thermostatTemp = Math.max(16, Math.min(30, thermostatTemp));
+            const output = document.getElementById('outputContent');
+            output.textContent = `🌡️ Adjusting thermostat temperature to ${thermostatTemp}°C...\n✅ Temperature set\n`;
+        }
+
+        function setSchedule() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `⏰ Setting up smart schedule...\n✅ Schedule configured:\n  - 07:00: Wake up (lights on, coffee brewing)\n  - 18:00: Evening mode (lights dimmed)\n  - 22:00: Night mode (security armed)\n`;
+        }
+
+        function viewCamera(location) {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📷 Accessing camera feed for ${location.replace('_', ' ')}...\n✅ Live feed active\n📊 Motion detection: Enabled\n🔒 Security status: Monitoring\n`;
+        }
+
+        function armSecurity() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🔒 Arming security system...\n✅ All cameras activated\n✅ Motion sensors enabled\n✅ Alarm system ready\n`;
+        }
+
+        function playMusic() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🎧 Starting music playback...\n🎵 Now playing: "Productive Focus" playlist\n🔊 Volume: ${speakerVolume}%\n⏯️ Status: Playing\n`;
+        }
+
+        function adjustVolume(direction) {
+            if (direction === 'up') {
+                speakerVolume = Math.min(100, speakerVolume + 10);
+            } else {
+                speakerVolume = Math.max(0, speakerVolume - 10);
+            }
+            const output = document.getElementById('outputContent');
+            output.textContent = `🔊 Adjusting volume to ${speakerVolume}%...\n✅ Volume updated\n`;
+        }
+
+        function brewCoffee() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `☕ Starting coffee brewing process...\n🔥 Heating water...\n☕ Brewing...\n✅ Coffee ready! Estimated time: 4 minutes\n`;
+        }
+
+        function syncFitness() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🏃‍♂️ Syncing fitness data...\n📊 Steps today: 8,432\n🔥 Calories burned: 1,250\n❤️ Heart rate avg: 72 BPM\n😴 Sleep last night: 7.5 hours\n✅ Data synchronized\n`;
+        }
+
+        function setGoal() {
+            const goal = prompt('Set daily step goal:', '10000');
+            if (goal) {
+                const output = document.getElementById('outputContent');
+                output.textContent = `🎯 Setting new fitness goal: ${goal} steps per day\n✅ Goal updated\n💪 Let's crush it!\n`;
+            }
+        }
+
+        function checkRecordings() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📹 Accessing security recordings...\n📅 Today:\n  - 08:15: Front door motion\n  - 12:30: Backyard activity\n  - 18:45: Delivery person\n📅 Yesterday:\n  - 22:10: Evening walk\n✅ Recordings loaded\n`;
+        }
+
+        function scheduleBrew() {
+            const time = prompt('Set brew time (HH:MM):', '07:00');
+            if (time) {
+                const output = document.getElementById('outputContent');
+                output.textContent = `⏰ Scheduling coffee brew for ${time}...\n✅ Auto-brew scheduled\n☕ Fresh coffee every morning!\n`;
+            }
+        }
+    </script>
+</body>
+</html>

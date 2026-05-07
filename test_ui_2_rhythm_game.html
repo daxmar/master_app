@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythm Game - Rhythm Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .game-area {
+            padding: 30px;
+            text-align: center;
+        }
+        .rhythm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .rhythm-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .rhythm-btn:active {
+            transform: scale(0.95);
+        }
+        .red { background: #ff4757; }
+        .blue { background: #3742fa; }
+        .green { background: #2ed573; }
+        .yellow { background: #ffa502; }
+        .score-display {
+            font-size: 2em;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .output {
+            padding: 30px;
+            background: white;
+        }
+        .output-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Rhythm Game</h1>
+            <p>Rhythm Game Experience - Tema: Game, Ritme</p>
+        </div>
+
+        <div class="game-area">
+            <div class="score-display">
+                Score: <span id="score">0</span> | Combo: <span id="combo">0</span>
+            </div>
+
+            <div class="rhythm-buttons">
+                <button class="rhythm-btn red" onclick="hitButton('red')">🔴</button>
+                <button class="rhythm-btn blue" onclick="hitButton('blue')">🔵</button>
+                <button class="rhythm-btn green" onclick="hitButton('green')">🟢</button>
+                <button class="rhythm-btn yellow" onclick="hitButton('yellow')">🟡</button>
+            </div>
+
+            <div id="rhythmSequence"></div>
+        </div>
+
+        <div class="controls">
+            <button onclick="startGame()">🎮 Start Game</button>
+            <button onclick="stopGame()">⏹️ Stop</button>
+            <button onclick="changeDifficulty()">⚙️ Difficulty</button>
+            <button onclick="showStats()">📊 Stats</button>
+        </div>
+
+        <div class="output">
+            <h3>Game Log</h3>
+            <div class="output-content" id="outputContent">
+                Welcome to Rhythm Game! Click "Start Game" to begin your musical journey.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let combo = 0;
+        let gameActive = false;
+        let sequence = [];
+        let currentStep = 0;
+        let difficulty = 'normal';
+
+        function startGame() {
+            if (gameActive) return;
+            gameActive = true;
+            score = 0;
+            combo = 0;
+            currentStep = 0;
+            sequence = [];
+            updateDisplay();
+            const output = document.getElementById('outputContent');
+            output.textContent = '🎵 Game started! Follow the rhythm pattern...\n\n';
+            generateSequence();
+            playSequence();
+        }
+
+        function stopGame() {
+            gameActive = false;
+            const output = document.getElementById('outputContent');
+            output.textContent += '\n\n⏹️ Game stopped. Final Score: ' + score;
+        }
+
+        function generateSequence() {
+            const length = difficulty === 'easy' ? 4 : difficulty === 'hard' ? 8 : 6;
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            sequence = [];
+            for (let i = 0; i < length; i++) {
+                sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            }
+        }
+
+        function playSequence() {
+            let step = 0;
+            const interval = setInterval(() => {
+                if (step >= sequence.length) {
+                    clearInterval(interval);
+                    document.getElementById('outputContent').textContent += '\n\n🎯 Your turn! Repeat the sequence.';
+                    return;
+                }
+                flashButton(sequence[step]);
+                step++;
+            }, 800);
+        }
+
+        function flashButton(color) {
+            const btn = document.querySelector(`.${color}`);
+            btn.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function hitButton(color) {
+            if (!gameActive) return;
+
+            const output = document.getElementById('outputContent');
+            if (currentStep < sequence.length) {
+                if (color === sequence[currentStep]) {
+                    combo++;
+                    score += 10 * combo;
+                    output.textContent += `✅ Hit! Combo: ${combo}\n`;
+                    currentStep++;
+                    if (currentStep >= sequence.length) {
+                        output.textContent += `\n🎉 Sequence complete! +${10 * combo} points\n`;
+                        setTimeout(() => {
+                            generateSequence();
+                            currentStep = 0;
+                            playSequence();
+                        }, 2000);
+                    }
+                } else {
+                    combo = 0;
+                    score = Math.max(0, score - 20);
+                    output.textContent += `❌ Miss! Combo broken.\n`;
+                    currentStep = 0;
+                    setTimeout(() => playSequence(), 1500);
+                }
+                updateDisplay();
+            }
+        }
+
+        function changeDifficulty() {
+            const difficulties = ['easy', 'normal', 'hard'];
+            const currentIndex = difficulties.indexOf(difficulty);
+            difficulty = difficulties[(currentIndex + 1) % difficulties.length];
+            document.getElementById('outputContent').textContent = `⚙️ Difficulty changed to: ${difficulty.toUpperCase()}\n\nEasy: 4 notes\nNormal: 6 notes\nHard: 8 notes`;
+        }
+
+        function showStats() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📊 Game Statistics\n\n`;
+            output.textContent += `Current Score: ${score}\n`;
+            output.textContent += `Best Combo: ${combo}\n`;
+            output.textContent += `Difficulty: ${difficulty}\n`;
+            output.textContent += `Games Played: 1\n`;
+            output.textContent += `Accuracy: ${((score / Math.max(1, score + 20)) * 100).toFixed(1)}%\n`;
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('combo').textContent = combo;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - AI Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .message.user {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.ai {
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+        }
+        .send-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        .send-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .action-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+        .ai-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .typing {
+            display: none;
+            padding: 15px;
+            color: #666;
+            font-style: italic;
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Assistant</h1>
+            <p>AI Assistant & Intelligent Helper - Tema: AI</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="quick-actions">
+                <div class="action-btn" onclick="quickAction('schedule')">📅 Plan my day</div>
+                <div class="action-btn" onclick="quickAction('reminder')">⏰ Set reminder</div>
+                <div class="action-btn" onclick="quickAction('weather')">🌤️ Check weather</div>
+                <div class="action-btn" onclick="quickAction('recipe')">🍳 Suggest recipe</div>
+                <div class="action-btn" onclick="quickAction('joke')">😄 Tell a joke</div>
+                <div class="action-btn" onclick="quickAction('translate')">🌐 Translate text</div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="ai-avatar">🤖</div>
+                    Hello! I'm your AI assistant. How can I help you today?
+                </div>
+            </div>
+
+            <div class="typing" id="typingIndicator">
+                AI is typing...
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="message-input" id="messageInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+
+        <div class="output">
+            <h3>AI Activity Log</h3>
+            <div class="output-content" id="outputContent">
+                AI Assistant initialized. Ready to help with various tasks and queries.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let conversationHistory = [
+            {role: 'ai', content: 'Hello! I\'m your AI assistant. How can I help you today?'}
+        ];
+
+        function addMessage(content, sender) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            if (sender === 'ai') {
+                messageDiv.innerHTML = `<div class="ai-avatar">🤖</div>${content}`;
+            } else {
+                messageDiv.textContent = content;
+            }
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showTyping() {
+            document.getElementById('typingIndicator').style.display = 'block';
+        }
+
+        function hideTyping() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            conversationHistory.push({role: 'user', content: message});
+            input.value = '';
+
+            showTyping();
+
+            // Simulate AI response
+            setTimeout(() => {
+                hideTyping();
+                const response = generateAIResponse(message);
+                addMessage(response, 'ai');
+                conversationHistory.push({role: 'ai', content: response});
+
+                const output = document.getElementById('outputContent');
+                output.textContent = `💬 Latest interaction:\nUser: ${message}\nAI: ${response}\n\n📊 Conversation length: ${conversationHistory.length} messages`;
+            }, 1000 + Math.random() * 2000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function generateAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return 'Hello! Nice to meet you. What would you like to talk about?';
+            }
+
+            if (lowerMessage.includes('weather')) {
+                const conditions = ['sunny', 'cloudy', 'rainy', 'windy'];
+                const temp = Math.floor(Math.random() * 20) + 15;
+                const condition = conditions[Math.floor(Math.random() * conditions.length)];
+                return `🌤️ Today's weather: ${temp}°C and ${condition}. Perfect day for outdoor activities!`;
+            }
+
+            if (lowerMessage.includes('time')) {
+                return `🕐 Current time is ${new Date().toLocaleTimeString()}. How can I help you make the most of your day?`;
+            }
+
+            if (lowerMessage.includes('joke')) {
+                const jokes = [
+                    'Why did the computer go to therapy? It had too many bytes of emotional baggage! 🤖',
+                    'What do you call a bear with no teeth? A gummy bear! 🐻',
+                    'Why did the scarecrow win an award? Because he was outstanding in his field! 🌾'
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+
+            if (lowerMessage.includes('help')) {
+                return 'I can help you with:\n• 📅 Planning and scheduling\n• ⏰ Setting reminders\n• 🌤️ Weather information\n• 🍳 Recipe suggestions\n• 😄 Jokes and entertainment\n• 🌐 Translation services\n\nWhat would you like to try?';
+            }
+
+            if (lowerMessage.includes('thank')) {
+                return 'You\'re very welcome! 😊 Is there anything else I can help you with?';
+            }
+
+            // Generic responses
+            const responses = [
+                'That\'s interesting! Tell me more about that.',
+                'I understand. How can I assist you further?',
+                'Thanks for sharing that with me. What else is on your mind?',
+                'I\'m here to help! What would you like to know?',
+                'That sounds important. How can I support you with that?'
+            ];
+
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function quickAction(action) {
+            let message = '';
+
+            switch(action) {
+                case 'schedule':
+                    message = 'Help me plan my day';
+                    break;
+                case 'reminder':
+                    message = 'Set a reminder for me';
+                    break;
+                case 'weather':
+                    message = 'What\'s the weather like today?';
+                    break;
+                case 'recipe':
+                    message = 'Suggest a recipe for dinner';
+                    break;
+                case 'joke':
+                    message = 'Tell me a joke';
+                    break;
+                case 'translate':
+                    message = 'Translate this text to Spanish: Hello world';
+                    break;
+            }
+
+            document.getElementById('messageInput').value = message;
+            sendMessage();
+        }
+
+        // Welcome message in output
+        document.getElementById('outputContent').textContent = '🤖 AI Assistant activated\n\n📊 Status: Online\n💬 Conversations: 1\n⚡ Response time: <2 seconds\n\nReady to assist!';
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kesehatan Paralel Portal - Health Tracking</title>
+    <style>body{font-family:Arial; margin:20px;} .log{margin:10px 0;}</style>
+</head>
+<body>
+    <h1>Health Tracking</h1>
+    <div>
+        <input type="number" id="steps" placeholder="Steps today">
+        <button onclick="logSteps()">Log Steps</button>
+    </div>
+    <div id="logs"></div>
+    <script>
+        function logSteps() {
+            const steps = document.getElementById('steps').value;
+            document.getElementById('logs').innerHTML += `<div class="log">Logged {steps} steps</div>`;
+        }
+    </script>
+</body>
+</html>

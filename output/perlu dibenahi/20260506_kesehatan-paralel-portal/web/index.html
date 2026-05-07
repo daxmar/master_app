@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kesehatan Paralel Portal Web UI</title>
+  <style>body{font-family:Inter,system-ui,sans-serif;background:#f9fafb;color:#111827;margin:0;padding:24px;}  .container{max-width:980px;margin:0 auto;}  h1{margin-bottom:8px;}  .card{background:#ffffff;border-radius:20px;box-shadow:0 18px 48px rgba(15,23,42,.08);padding:24px;margin-top:20px;}  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;}  pre{background:#111827;color:#f8fafc;padding:16px;border-radius:16px;overflow:auto;white-space:pre-wrap;word-break:break-word;}  button{border:none;padding:12px 18px;border-radius:12px;background:#2563eb;color:#fff;cursor:pointer;transition:all .15s ease;}  button:hover{background:#1d4ed8;}  iframe{width:100%;height:420px;border:1px solid #d1d5db;border-radius:16px;}  .run-output{background:#f3f4f6;padding:16px;border-radius:16px;white-space:pre-wrap;min-height:120px;}  @media(max-width:720px){.grid{grid-template-columns:1fr;}}</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kesehatan Paralel Portal - Web UI</h1>
+    <p>Aplikasi kesehatan paralel portal yang menyatukan tema Kesehatan, dengan nuansa Komedi dan fungsi Paralel. Dibangun sebagai prototype sederhana menggunakan Rust untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.</p>
+    <div class="card">
+      <h2>Detail Proyek</h2>
+      <div class="grid">
+        <div>
+          <p><strong>Folder:</strong> 20260506_kesehatan-paralel-portal</p>
+          <p><strong>Bahasa:</strong> Rust</p>
+          <p><strong>File awal:</strong> main.rs</p>
+          <p><strong>Run command:</strong> <code>rustc ../src/main.rs -o ../run-app && ../run-app</code></p>
+        </div>
+        <div>
+          <p><strong>Tema:</strong></p>
+          <ul><li>Kesehatan</li><li>Komedi</li><li>Paralel</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Run UI</h2>
+      <p>Gunakan halaman ini untuk melihat detail dan prosedur menjalankan aplikasi.</p>
+      <p><a href="prototype.html" target="_blank">🔗 Buka Prototype UI Lengkap</a></p>
+      <div id="appPreview"></div>
+      <div id="runArea"></div>
+    </div>
+    <div class="card">
+      <h2>Code Preview</h2>
+      <pre>fn main() {
+    println!("Running Kesehatan Paralel Portal");
+    println!("Tema: {}", "Kesehatan, Komedi, Paralel");
+    // Tambahkan logika dasar aplikasi di sini
+}
+</pre>
+    </div>
+  </div>
+  <script>
+const metadata = {"name": "20260506_kesehatan-paralel-portal", "title": "Kesehatan Paralel Portal", "description": "Aplikasi kesehatan paralel portal yang menyatukan tema Kesehatan, dengan nuansa Komedi dan fungsi Paralel. Dibangun sebagai prototype sederhana menggunakan Rust untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.", "created_at": "2026-05-06T02:32:10.273613Z", "themes": ["Kesehatan", "Komedi", "Paralel"], "language": {"key": "rust", "name": "Rust", "preferred_themes": ["Keamanan", "IoT", "Sistem", "Kuantum", "Retro"], "file": "main.rs"}, "files": ["src\\main.rs"], "keywords": ["kesehatan", "komedi", "paralel"]};
+const codePreview = "fn main() {\n    println!(\"Running Kesehatan Paralel Portal\");\n    println!(\"Tema: {}\", \"Kesehatan, Komedi, Paralel\");\n    // Tambahkan logika dasar aplikasi di sini\n}\n";
+const runArea = document.getElementById('runArea');
+function showHtmlPreview() {
+  runArea.innerHTML = '<h3>Preview HTML</h3><iframe src="../src/index.html"></iframe>';
+}
+function showJsSimulation() {
+  runArea.innerHTML = '<button id="runButton">Simulasikan Run</button><div class="run-output" id="outputArea">Tekan tombol untuk melihat output.</div>';
+  document.getElementById('runButton').addEventListener('click', function() {
+    document.getElementById('outputArea').textContent = 'Running ' + metadata.title + '\nTema: ' + metadata.themes.join(', ');
+  });
+}
+function showCommandNote(command) {
+  runArea.innerHTML = '<p>Jalankan perintah di atas untuk mengeksekusi proyek di terminal atau environment yang sesuai.</p>';
+}
+if (metadata.language.key === 'html') { showHtmlPreview(); } else if (metadata.language.key === 'javascript') { showJsSimulation(); } else { showCommandNote(); }
+</script>
+</body>
+</html>

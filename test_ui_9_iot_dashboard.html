@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Dashboard - IoT Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .device-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .device-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .online { background: #28a745; }
+        .offline { background: #dc3545; }
+        .unknown { background: #ffc107; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 2px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .sensor-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .sensor-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .automation-rules {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: 0 30px 30px 30px;
+            border-radius: 15px;
+        }
+        .rule-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .output {
+            padding: 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 IoT Dashboard</h1>
+            <p>IoT Control Center & Smart Home Hub - Tema: IoT</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>🌡️ Temperature Sensor</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <div class="sensor-value" id="temperature">24.5°C</div>
+                <p>Humidity: 65%</p>
+                <button onclick="adjustClimate('heat')">🔥 Heat</button>
+                <button onclick="adjustClimate('cool')">❄️ Cool</button>
+                <button onclick="setTemperature()">Set Temp</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>💡 Smart Lighting</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <div class="sensor-value" id="brightness">75%</div>
+                <p>Living Room - Warm White</p>
+                <button onclick="controlLights('on')">Turn On</button>
+                <button onclick="controlLights('off')">Turn Off</button>
+                <button onclick="setBrightness()">Brightness</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>🔒 Smart Lock</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <div class="sensor-value">Locked</div>
+                <p>Last access: 2 hours ago</p>
+                <button onclick="lockDoor()">Lock</button>
+                <button onclick="unlockDoor()">Unlock</button>
+                <button onclick="viewAccessLog()">Access Log</button>
+            </div>
+
+            <div class="device-card">
+                <div class="device-status">
+                    <h3>📷 Security Camera</h3>
+                    <span><span class="status-indicator online"></span>Online</span>
+                </div>
+                <div class="sensor-value">Active</div>
+                <p>Motion detected: None</p>
+                <button onclick="viewCamera()">Live View</button>
+                <button onclick="armSystem()">Arm</button>
+                <button onclick="recordings()">Recordings</button>
+            </div>
+
+            <div class="device-card">
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <h4>🌬️ Air Quality</h4>
+                        <div class="sensor-value">Good</div>
+                        <small>PM2.5: 12 µg/m³</small>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>🔊 Noise Level</h4>
+                        <div class="sensor-value">45dB</div>
+                        <small>Quiet environment</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="device-card">
+                <div class="sensor-grid">
+                    <div class="sensor-card">
+                        <h4>⚡ Energy Usage</h4>
+                        <div class="sensor-value">2.4kW</div>
+                        <small>Daily: 18.5 kWh</small>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>💧 Water Flow</h4>
+                        <div class="sensor-value">0.0 L/m</div>
+                        <small>No active usage</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="automation-rules">
+            <h2>🤖 Smart Automation Rules</h2>
+            <div class="rule-item">
+                <strong>🌅 Morning Routine:</strong> Turn on lights at 7:00 AM when motion detected
+            </div>
+            <div class="rule-item">
+                <strong>🌙 Evening Mode:</strong> Dim lights and lock doors at 11:00 PM
+            </div>
+            <div class="rule-item">
+                <strong>🏠 Away Mode:</strong> Activate security when no motion for 30 minutes
+            </div>
+            <div class="rule-item">
+                <strong>🌡️ Climate Control:</strong> Adjust thermostat based on weather forecast
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 20px;">
+            <button onclick="addDevice()">➕ Add Device</button>
+            <button onclick="createAutomation()">⚙️ Create Rule</button>
+            <button onclick="systemSettings()">🔧 Settings</button>
+            <button onclick="viewAnalytics()">📊 Analytics</button>
+        </div>
+
+        <div class="output">
+            <h3>IoT System Log</h3>
+            <div class="output-content" id="outputContent">
+                IoT Hub initialized. All systems online and monitoring.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function controlLights(action) {
+            const output = document.getElementById('outputContent');
+            if (action === 'on') {
+                output.textContent = `💡 Activating smart lighting system...\n✅ All lights turned on\n🌟 Brightness: 75%\n🎨 Color: Warm White\n`;
+            } else {
+                output.textContent = `💡 Deactivating smart lighting system...\n✅ All lights turned off\n🌙 Night mode activated\n`;
+            }
+        }
+
+        function setBrightness() {
+            const brightness = prompt('Set brightness (0-100%):', '75');
+            if (brightness !== null) {
+                document.getElementById('brightness').textContent = brightness + '%';
+                const output = document.getElementById('outputContent');
+                output.textContent = `💡 Adjusting brightness to ${brightness}%...\n✅ Lighting updated across all zones\n`;
+            }
+        }
+
+        function adjustClimate(mode) {
+            const output = document.getElementById('outputContent');
+            const currentTemp = parseFloat(document.getElementById('temperature').textContent);
+            let newTemp = currentTemp;
+
+            if (mode === 'heat') {
+                newTemp = Math.min(30, currentTemp + 1);
+                output.textContent = `🔥 Activating heating system...\n🌡️ Temperature increasing to ${newTemp}°C\n`;
+            } else {
+                newTemp = Math.max(16, currentTemp - 1);
+                output.textContent = `❄️ Activating cooling system...\n🌡️ Temperature decreasing to ${newTemp}°C\n`;
+            }
+
+            document.getElementById('temperature').textContent = newTemp + '°C';
+        }
+
+        function setTemperature() {
+            const temp = prompt('Set target temperature (°C):', '24');
+            if (temp !== null) {
+                const targetTemp = Math.max(16, Math.min(30, parseFloat(temp)));
+                document.getElementById('temperature').textContent = targetTemp + '°C';
+                const output = document.getElementById('outputContent');
+                output.textContent = `🌡️ Setting thermostat to ${targetTemp}°C...\n✅ Temperature control activated\n🎯 Target reached in approximately 15 minutes\n`;
+            }
+        }
+
+        function lockDoor() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🔒 Activating smart lock...\n✅ Front door locked\n🔔 Security system armed\n📱 Notification sent to all users\n`;
+        }
+
+        function unlockDoor() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🔓 Deactivating smart lock...\n⚠️ Front door unlocked\n👁️ Camera monitoring active\n⏰ Auto-lock in 5 minutes\n`;
+        }
+
+        function viewAccessLog() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📋 Access Log - Last 24 hours:\n\n`;
+            output.textContent += `🕐 08:15 - Front door unlocked (Key fob)\n`;
+            output.textContent += `🕐 12:30 - Garage door opened (App)\n`;
+            output.textContent += `🕐 18:45 - Back door accessed (PIN)\n`;
+            output.textContent += `🕐 22:10 - Security system armed (Auto)\n\n`;
+            output.textContent += `🔐 Total events: 4\n✅ No unauthorized access\n`;
+        }
+
+        function viewCamera() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📷 Accessing live camera feed...\n✅ Connecting to security cameras\n\n`;
+            output.textContent += `📍 Front Door: Motion detected - Delivery person\n`;
+            output.textContent += `📍 Backyard: No activity\n`;
+            output.textContent += `📍 Garage: Vehicle present\n\n`;
+            output.textContent += `🎥 Recording: Active\n🔄 Auto-refresh: Every 30 seconds\n`;
+        }
+
+        function armSystem() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🛡️ Arming security system...\n✅ All cameras activated\n🚨 Motion sensors enabled\n🔊 Alarm system ready\n📱 Emergency contacts notified\n`;
+        }
+
+        function recordings() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📹 Security Recordings:\n\n`;
+            output.textContent += `📅 Today:\n  - 08:15: Front door motion (2 min)\n  - 12:30: Backyard activity (5 min)\n  - 18:45: Delivery (3 min)\n\n`;
+            output.textContent += `📅 Yesterday:\n  - 19:20: Evening walk (1 min)\n  - 22:10: Animal detection (30 sec)\n\n`;
+            output.textContent += `💾 Storage used: 2.4 GB\n🎬 Total recordings: 15\n`;
+        }
+
+        function addDevice() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `➕ Adding new IoT device...\n🔍 Scanning for devices...\n\n`;
+            output.textContent += `📡 Found devices:\n  - Smart Thermostat (Living Room)\n  - Motion Sensor (Hallway)\n  - Smart Plug (Kitchen)\n\n`;
+            output.textContent += `✅ Device "Smart Thermostat" added successfully\n🔗 Connecting to network...\n⚙️ Configuring settings...\n🎯 Ready to use!\n`;
+        }
+
+        function createAutomation() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `⚙️ Creating new automation rule...\n\n`;
+            output.textContent += `📝 Rule: "Good Morning Routine"\n`;
+            output.textContent += `⏰ Trigger: 7:00 AM daily\n`;
+            output.textContent += `🎬 Actions:\n  - Turn on bedroom lights (50% brightness)\n  - Start coffee maker\n  - Play morning playlist\n  - Send wake-up reminder\n\n`;
+            output.textContent += `✅ Automation rule created and activated\n`;
+        }
+
+        function systemSettings() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `🔧 IoT System Settings:\n\n`;
+            output.textContent += `🌐 Network: Connected (192.168.1.100)\n`;
+            output.textContent += `📊 Devices: 12 online, 2 offline\n`;
+            output.textContent += `💾 Storage: 75% used\n`;
+            output.textContent += `🔋 Battery levels: All >80%\n`;
+            output.textContent += `📡 Signal strength: Excellent\n`;
+            output.textContent += `🔄 Auto-backup: Daily at 2:00 AM\n\n`;
+            output.textContent += `⚙️ Firmware: Up to date\n`;
+        }
+
+        function viewAnalytics() {
+            const output = document.getElementById('outputContent');
+            output.textContent = `📊 IoT Analytics Dashboard:\n\n`;
+            output.textContent += `📈 Energy Savings: 23% this month\n`;
+            output.textContent += `🏠 Occupancy: 85% of the time\n`;
+            output.textContent += `🔒 Security Events: 3 (all authorized)\n`;
+            output.textContent += `🌡️ Temperature Range: 18-26°C\n`;
+            output.textContent += `💡 Lighting Usage: 6.5 hours/day\n\n`;
+            output.textContent += `💡 Insights:\n  - Most active: Evening hours\n  - Peak energy: 7-9 PM\n  - Security: No incidents\n`;
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const tempEl = document.getElementById('temperature');
+            const currentTemp = parseFloat(tempEl.textContent);
+            const variation = (Math.random() - 0.5) * 0.2; // Small random variation
+            const newTemp = Math.round((currentTemp + variation) * 10) / 10;
+            tempEl.textContent = newTemp + '°C';
+        }, 10000);
+    </script>
+</body>
+</html>

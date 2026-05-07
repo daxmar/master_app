@@ -1,0 +1,33 @@
+{
+  "name": "20260506_keuangan-dan-minimalis-playground",
+  "title": "Keuangan dan Minimalis Playground",
+  "description": "Aplikasi keuangan dan minimalis playground yang menyatukan tema Keuangan, dengan nuansa Minimalis dan fungsi IoT. Dibangun sebagai prototype sederhana menggunakan HTML untuk mengeksplorasi ide kreatif dan kegunaan sehari-hari.",
+  "created_at": "2026-05-06T02:30:54.651067Z",
+  "themes": [
+    "Keuangan",
+    "Minimalis",
+    "IoT"
+  ],
+  "language": {
+    "key": "html",
+    "name": "HTML",
+    "preferred_themes": [
+      "Seni",
+      "Hiburan",
+      "Retro",
+      "Minimalis",
+      "Kreativitas"
+    ],
+    "file": "index.html"
+  },
+  "files": [
+    "src\\index.html",
+    "web\\index.html",
+    "web\\prototype.html"
+  ],
+  "keywords": [
+    "keuangan",
+    "minimalis",
+    "iot"
+  ]
+}
